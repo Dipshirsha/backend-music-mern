@@ -27,9 +27,13 @@ router.post("/addalbum", async (req, res) => {
 
 
 router.get("/album", async (req, res) => {
+
+  const page = parseInt(req.query.page) || 1;
+  
+  const limit = 10;
     try {
-      const allAlbum = await albumData.find();
-      res.status(200).json(allAlbum);
+      const albums = await albumData.find().skip((page - 1) * limit).limit(limit);
+      res.status(200).json(albums);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -49,6 +53,22 @@ router.post("/updatealbum", async (req, res) => {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
+  });
+
+
+  router.post("/searchdashalbum", async (req, res) => {
+    const { query } = req.body;
+    if (!query) {
+      return res.json([]);
+    }
+    try {
+      const results = await albumData.find({ name: new RegExp(query, 'i') });
+      res.json(results);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  
   });
 
 
