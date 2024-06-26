@@ -44,7 +44,7 @@ router.post("/addremoveplaylist", async (req, res) => {
   try {
     const singleUser = await userData.findByIdAndUpdate( id,
      { playlist:playlist} );
-console.log(singleUser)
+    console.log(singleUser)
     res.status(200).json(singleUser);
   } catch (error) {
     res.status(500).json({ error: error.message });
