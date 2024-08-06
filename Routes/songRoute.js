@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const songData = require("../Schema/songDataModel");
 const mongoose = require('mongoose');
+const artistData = require("../Schema/artistDataModel");
 
 
 
@@ -30,7 +31,7 @@ async function fetchDocumentsByIds(ids,page) {
 
 router.post("/addsong", async (req, res) => {
     console.log(req.body);
-    const { name, imgUrl, audioUrl, type,artistName,artistId,albumName,albumId,language,date } = req.body;
+    const { name, imgUrl, audioUrl, type,artistName,artistId,albumName,albumId,language,date,lyrics } = req.body;
     try {
       const songAdded = await songData.create({
         name: name,
@@ -45,6 +46,7 @@ router.post("/addsong", async (req, res) => {
         language: language,
         date:new Date(date),
         plays:0,
+        lyrics:lyrics,
         
       });
       res.status(201).json(songAdded);
@@ -131,18 +133,19 @@ router.post("/fetchliked", async (req, res) => {
   }
 });
 
- router.post('/search', async (req, res) => {
+router.post('/search', async (req, res) => {
   const { name } = req.body;
   try {
     const regex = new RegExp(name, 'i'); // 'i' for case-insensitive
-    const songs = await songData.find({ name: { $regex: regex } });
-    const updateSong=songs.slice(0,5);
-    console.log(updateSong)
-    res.status(200).json(updateSong);
+  // 'i' for case-insensitive
+    const artist = await artistData.find({ name: { $regex: regex } }).limit(2);
+    const songs = await songData.find({ name: { $regex: regex } }).limit(4); // Fetch only 5 matching documents
+    res.status(200).json([...songs,...artist]);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}); 
+});
+
 
 
 
@@ -155,12 +158,33 @@ router.post("/fetchsingersong", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+router.post("/fetchadded", async (req, res) => {
+  try {
+    const {id,page} = req.body;
+    const song = await fetchDocumentsByIds(id,page)
+    res.status(200).json(song);
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+router.post("/fetchsingle", async (req, res) => {
+  try {
+    const {id} = req.body;
+    const song = await songData.findById(id)
+    res.status(200).json(song);
+
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 router.post("/fetchalbumsong", async (req, res) => {
   try {
     const {id,page} = req.body;
     const song = await fetchDocumentsByIds(id,page)
+    console.log(song)
     res.status(200).json(song);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -246,6 +270,19 @@ router.post('/filter-songs', async (req, res) => {
     res.status(500).json({ error: 'An error occurred while fetching songs' });
   }
 });
+
+
+router.post("/fetchplaylistsong", async (req, res) => {
+  try {
+    const {id,page} = req.body;
+    const song = await fetchDocumentsByIds(id,page)
+    console.log(song)
+    res.status(200).json(song);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 
 
