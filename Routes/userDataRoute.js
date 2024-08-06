@@ -15,6 +15,8 @@ router.post("/register", async (req, res) => {
       liked:[],
       fireBaseId:fireBaseId,
       following:[],
+      forked:[],
+      added:[],
     });
     res.status(201).json(userAdded);
   } catch (error) {
@@ -44,6 +46,20 @@ router.post("/addremoveplaylist", async (req, res) => {
   try {
     const singleUser = await userData.findByIdAndUpdate( id,
      { playlist:playlist} );
+    console.log(singleUser)
+    res.status(200).json(singleUser);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post("/added", async (req, res) => {
+
+  const { id,added } = req.body;
+
+  try {
+    const singleUser = await userData.findByIdAndUpdate( id,
+     { added:added} );
     console.log(singleUser)
     res.status(200).json(singleUser);
   } catch (error) {
@@ -99,6 +115,21 @@ router.post("/updatefollowing", async (req, res) => {
   }
 });
 
+
+
+router.post("/addremoveuserfork", async (req, res) => {
+
+  const { id,forked } = req.body;
+
+  try {
+    const singleUser = await userData.findByIdAndUpdate( id,
+     { forked:forked} );
+    console.log(singleUser)
+    res.status(200).json(singleUser);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 

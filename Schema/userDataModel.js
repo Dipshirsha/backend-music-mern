@@ -38,6 +38,13 @@ const userDataSchema = new mongoose.Schema(
             
            
         },
+        forked:{
+           type:[String],
+        },
+        added:{
+            type:[String],
+        },
+
 
     },
     { timestamps: true }

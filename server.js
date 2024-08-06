@@ -14,12 +14,14 @@ const userDataRoute = require("./Routes/userDataRoute");
 const songDataRoute=require("./Routes/songRoute")
 const albumDataRoute=require("./Routes/albumDataRoute")
 const artistDataRoute=require("./Routes/ArtistRoute")
+const playlistDataRoute=require("./Routes/playlistRout")
 
 app.use(express.json());
 
 const userData = require("./Schema/userDataModel");
 const songData = require("./Schema/songDataModel");
 const artistData = require("./Schema/artistDataModel");
+const playlistData = require("./Schema/playlistModel");
 const albumData = require("./Schema/albumDataModel");
 
 
@@ -28,6 +30,7 @@ app.use( userDataRoute);
 app.use(songDataRoute);
 app.use(artistDataRoute);
 app.use(albumDataRoute);
+app.use(playlistDataRoute);
 
 
 mongoose
