@@ -27,6 +27,9 @@ const songDataSchema = new mongoose.Schema(
             type:String,
           
         },
+        lyrics:{
+            type:String,
+        },
         albumName:{
             type:String,
          
