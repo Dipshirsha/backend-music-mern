@@ -79,6 +79,18 @@ router.post("/updateartist", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+router.post("/fetchsinger", async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    const singleArtist = await artistData.findById( id
+     );
+    console.log(singleArtist)
+    res.status(200).json(singleArtist);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 router.post("/updatefollowers", async (req, res) => {
@@ -113,15 +125,33 @@ router.post("/searchdashartist", async (req, res) => {
   if (!query) {
     return res.json([]);
   }
+
   try {
-    const results = await artistData.find({ name: new RegExp(query, 'i') });
-    res.json(results);
+    const regex = new RegExp(query, 'i'); // 'i' for case-insensitive
+  // 'i' for case-insensitive
+    const artist = await artistData.find({ name: { $regex: regex } }).limit(5);
+    console.log(artist)
+    res.status(200).json(artist);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: error.message });
   }
 
 });
+
+router.post('/search', async (req, res) => {
+  const { name } = req.body;
+  try {
+    const regex = new RegExp(name, 'i'); // 'i' for case-insensitive
+    const songs = await artistData.find({ name: { $regex: regex } });
+    const updateSong=songs.slice(0,5);
+    
+    console.log(updateSong)
+    res.status(200).json(updateSong);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}); 
+
 
 
 
