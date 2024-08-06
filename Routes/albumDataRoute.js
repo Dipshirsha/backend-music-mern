@@ -61,12 +61,17 @@ router.post("/updatealbum", async (req, res) => {
     if (!query) {
       return res.json([]);
     }
+
+
     try {
-      const results = await albumData.find({ name: new RegExp(query, 'i') });
-      res.json(results);
+      const regex = new RegExp(query, 'i'); // 'i' for case-insensitive
+      // 'i' for case-insensitive
+        const album = await albumData.find({ name: { $regex: regex } }).limit(5);
+        console.log(album)
+        res.status(200).json(album);;
+
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal server error' });
+      res.status(500).json({ error: error.message });
     }
   
   });
